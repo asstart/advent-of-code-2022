@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Part1(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
+func Task1_1(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
 
 	lines := convertInput(ir)
 
@@ -37,7 +37,7 @@ func Part1(ir InputReader, convertInput func(ir InputReader) []string) (string, 
 	return fmt.Sprintf("Day 1 Part 1 result: %v", max), nil
 }
 
-func Part2(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
+func Task1_2(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
 	lines := convertInput(ir)
 
 	max := [3]int{}
