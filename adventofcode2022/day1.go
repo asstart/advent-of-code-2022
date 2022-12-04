@@ -4,23 +4,47 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-	"strings"
 )
 
-func Task1_1(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
+type IntOrSpace struct {
+	v     int
+	space bool
+}
 
-	lines := convertInput(ir)
+func ToIntOrSpaceArr(ir InputReader) ([]IntOrSpace, error) {
+	lines, err := ir.GetInput()
+	if err != nil {
+		return nil, err
+	}
+
+	converted := []IntOrSpace{}
+	for _, l := range lines {
+		if l == "" {
+			converted = append(converted, IntOrSpace{space: true})
+		} else {
+			p, err := strconv.Atoi(l)
+			if err != nil {
+				return nil, err
+			}
+			converted = append(converted, IntOrSpace{v: p})
+		}
+	}
+	return converted, nil
+}
+
+func Task1_1(ir InputReader, convertInput func(ir InputReader) ([]IntOrSpace, error)) (string, error) {
+
+	items, err := convertInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	max := 0
 	tmpSum := 0
 
-	for _, l := range lines {
-		if strings.TrimSpace(l) != "" {
-			parsed, err := strconv.Atoi(l)
-			if err != nil {
-				return "", err
-			}
-			tmpSum += parsed
+	for _, itm := range items {
+		if !itm.space {
+			tmpSum += itm.v
 		} else {
 			if tmpSum > max {
 				max = tmpSum
@@ -37,19 +61,18 @@ func Task1_1(ir InputReader, convertInput func(ir InputReader) []string) (string
 	return fmt.Sprintf("Day 1 Part 1 result: %v", max), nil
 }
 
-func Task1_2(ir InputReader, convertInput func(ir InputReader) []string) (string, error) {
-	lines := convertInput(ir)
+func Task1_2(ir InputReader, convertInput func(ir InputReader) ([]IntOrSpace, error)) (string, error) {
+	items, err := convertInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	max := [3]int{}
 	tmpSum := 0
 
-	for _, l := range lines {
-		if strings.TrimSpace(l) != "" {
-			parsed, err := strconv.Atoi(l)
-			if err != nil {
-				return "", err
-			}
-			tmpSum += parsed
+	for _, itm := range items {
+		if !itm.space {
+			tmpSum += itm.v
 		} else {
 			minIdx, min := getMin(max[:])
 			if tmpSum > min {

@@ -65,39 +65,38 @@ func parseXYZ(s string) RPS {
 	}
 }
 
-type Tuple struct {
+// RPS stands for: Rock, Paper, Scissors
+type TupleRPS struct {
 	l RPS
 	r RPS
 }
 
-func ToTuple(ir InputReader) []Tuple {
+func ToTupleRPSArr(ir InputReader) ([]TupleRPS, error) {
 	content, err := ir.GetInput()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	lines, ok := content.([]string)
-	if !ok {
-		panic(fmt.Errorf("can't convert to []string"))
-	}
-
-	tuples := []Tuple{}
-	for _, l := range lines {
+	tuples := []TupleRPS{}
+	for _, l := range content {
 		l = strings.TrimSpace(l)
 		if l != "" {
 			splt := strings.Split(l, " ")
 			if len(splt) != 2 {
-				panic(fmt.Sprintf("can't split line: %v properly with space separator", l))
+				return nil, fmt.Errorf("can't split line: %v properly with space separator", l)
 			}
-			tuples = append(tuples, Tuple{parseABS(splt[0]), parseXYZ(splt[1])})
+			tuples = append(tuples, TupleRPS{parseABS(splt[0]), parseXYZ(splt[1])})
 		}
 	}
-	return tuples
+	return tuples, nil
 }
 
 // Standard rules
-func Task2_1(ir InputReader, convertInput func(ir InputReader) []Tuple) (string, error) {
-	source := convertInput(ir)
+func Task2_1(ir InputReader, convertInput func(ir InputReader) ([]TupleRPS, error)) (string, error) {
+	source, err := convertInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	score := 0
 
@@ -122,8 +121,11 @@ func ruleset1Score(l RPS, r RPS) int {
 	}
 }
 
-func Task2_2(ir InputReader, convertInput func(ir InputReader) []Tuple) (string, error) {
-	source := convertInput(ir)
+func Task2_2(ir InputReader, convertInput func(ir InputReader) ([]TupleRPS, error)) (string, error) {
+	source, err := convertInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	score := 0
 

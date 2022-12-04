@@ -15,15 +15,10 @@ type Segment struct {
 	r int
 }
 
-func ToTupleSegment(ir InputReader) []TupleSegment {
-	content, err := ir.GetInput()
+func ToTupleSegment(ir InputReader) ([]TupleSegment, error) {
+	lines, err := ir.GetInput()
 	if err != nil {
-		panic(err)
-	}
-
-	lines, ok := content.([]string)
-	if !ok {
-		panic(fmt.Errorf("can't cast source to []string"))
+		return nil, err
 	}
 
 	converted := []TupleSegment{}
@@ -31,32 +26,32 @@ func ToTupleSegment(ir InputReader) []TupleSegment {
 	for _, line := range lines {
 		splitted := strings.Split(line, ",")
 		if len(splitted) != 2 {
-			panic(fmt.Sprintf("got: %v, expected format: 1-1,2-2", line))
+			return nil, fmt.Errorf("got: %v, expected format: 1-1,2-2", line)
 		}
 		s1 := strings.Split(splitted[0], "-")
 		if len(s1) != 2 {
-			panic(fmt.Sprintf("got: %v, expected format: 1-1", splitted[0]))
+			return nil, fmt.Errorf("got: %v, expected format: 1-1", splitted[0])
 		}
 		s2 := strings.Split(splitted[1], "-")
 		if len(s2) != 2 {
-			panic(fmt.Sprintf("got: %v, expected format: 1-1", splitted[1]))
+			return nil, fmt.Errorf("got: %v, expected format: 1-1", splitted[1])
 		}
 
 		s1L, err := strconv.Atoi(s1[0])
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		s1R, err := strconv.Atoi(s1[1])
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		s2L, err := strconv.Atoi(s2[0])
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		s2R, err := strconv.Atoi(s2[1])
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		converted = append(converted,
 			TupleSegment{
@@ -66,11 +61,14 @@ func ToTupleSegment(ir InputReader) []TupleSegment {
 		)
 	}
 
-	return converted
+	return converted, nil
 }
 
-func Task4_1(ir InputReader, convInput func(InputReader) []TupleSegment) (string, error) {
-	data := convInput(ir)
+func Task4_1(ir InputReader, convInput func(InputReader) ([]TupleSegment, error)) (string, error) {
+	data, err := convInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	count := 0
 
@@ -84,8 +82,11 @@ func Task4_1(ir InputReader, convInput func(InputReader) []TupleSegment) (string
 	return fmt.Sprintf("result: %v", count), nil
 }
 
-func Task4_2(ir InputReader, convInput func(InputReader) []TupleSegment) (string, error) {
-	data := convInput(ir)
+func Task4_2(ir InputReader, convInput func(InputReader) ([]TupleSegment, error)) (string, error) {
+	data, err := convInput(ir)
+	if err != nil {
+		return "", err
+	}
 
 	count := 0
 

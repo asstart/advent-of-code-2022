@@ -10,15 +10,10 @@ type TupleIntArr struct {
 	r []int
 }
 
-func ToCharArr(ir InputReader) []TupleIntArr {
-	content, err := ir.GetInput()
+func ToTupleIntArr(ir InputReader) ([]TupleIntArr, error) {
+	lines, err := ir.GetInput()
 	if err != nil {
-		panic(err)
-	}
-
-	lines, ok := content.([]string)
-	if !ok {
-		panic(fmt.Errorf("can't convert input to lines arr"))
+		return nil, err
 	}
 
 	converted := []TupleIntArr{}
@@ -33,7 +28,7 @@ func ToCharArr(ir InputReader) []TupleIntArr {
 		})
 	}
 
-	return converted
+	return converted, nil
 }
 
 func stringToPriorityArr(s string) []int {
@@ -54,8 +49,11 @@ func getPriority(r rune) int {
 
 //Solution in this task is only for group of two sequences of items
 //General solution can be found in Task3_2
-func Task3_1(ir InputReader, convertInput func(ir InputReader) []TupleIntArr) (string, error) {
-	data := convertInput(ir)
+func Task3_1(ir InputReader, convertInput func(ir InputReader) ([]TupleIntArr, error)) (string, error) {
+	data, err := convertInput(ir)
+	if err != nil {
+		return "", err
+	}
 	commons := []int{}
 	for _, t := range data {
 		lefts := [53]int{}
@@ -104,19 +102,14 @@ func Task3_1(ir InputReader, convertInput func(ir InputReader) []TupleIntArr) (s
 	return fmt.Sprintf("result: %v", sum), nil
 }
 
-func ToArrOfIntArr(ir InputReader, groups int) [][][]int {
-	content, err := ir.GetInput()
+func To3DArray(ir InputReader, groups int) ([][][]int, error) {
+	lines, err := ir.GetInput()
 	if err != nil {
-		panic(err)
-	}
-
-	lines, ok := content.([]string)
-	if !ok {
-		panic(fmt.Errorf("can't convert input to lines arr"))
+		return nil, err
 	}
 
 	if len(lines)%groups != 0 {
-		panic(fmt.Errorf("bad input, %v is not dividable by %v", len(lines), groups))
+		return nil, fmt.Errorf("bad input, %v is not dividable by %v", len(lines), groups)
 	}
 
 	converted := [][][]int{}
@@ -129,7 +122,7 @@ func ToArrOfIntArr(ir InputReader, groups int) [][][]int {
 		groupN++
 	}
 
-	return converted
+	return converted, nil
 }
 
 func storageIdx(bpNum int, item int) int {
@@ -147,9 +140,12 @@ func storageIdx(bpNum int, item int) int {
 //		]
 //	]
 // ]
-func Task3_2(ir InputReader, convertInput func(ir InputReader, groups int) [][][]int) (string, error) {
+func Task3_2(ir InputReader, convertInput func(ir InputReader, groups int) ([][][]int, error)) (string, error) {
 	groupSize := 3
-	data := convertInput(ir, 3)
+	data, err := convertInput(ir, 3)
+	if err != nil {
+		return "", err
+	}
 
 	commons := []int{}
 	for _, group := range data {

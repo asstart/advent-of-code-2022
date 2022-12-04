@@ -2,19 +2,19 @@ package adventofcode2022
 
 import (
 	"bufio"
-	"fmt"
 	"os"
+	"strings"
 )
 
 type InputReader interface {
-	GetInput() (interface{}, error)
+	GetInput() ([]string, error)
 }
 
 type FileToStringsInputReader struct {
 	Path string
 }
 
-func (fts *FileToStringsInputReader) GetInput() (interface{}, error) {
+func (fts *FileToStringsInputReader) GetInput() ([]string, error) {
 	f, err := os.Open(fts.Path)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,9 @@ func (fts *FileToStringsInputReader) GetInput() (interface{}, error) {
 
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
-		lines = append(lines, sc.Text())
+		line := strings.TrimSpace(sc.Text())
+		lines = append(lines, line)
+
 	}
 
 	if err := sc.Err(); err != nil {
@@ -33,19 +35,4 @@ func (fts *FileToStringsInputReader) GetInput() (interface{}, error) {
 	}
 
 	return lines, nil
-}
-
-func ToLines(ir InputReader) []string {
-	content, err := ir.GetInput()
-	if err != nil {
-		panic(err)
-	}
-
-	lines, ok := content.([]string)
-
-	if !ok {
-		panic(fmt.Errorf("can't convert to []string"))
-	}
-
-	return lines
 }

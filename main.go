@@ -83,7 +83,7 @@ func runTask(o opts) {
 func t1_1() string {
 	res, err := adventofcode2022.Task1_1(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day1.data"},
-		adventofcode2022.ToLines,
+		adventofcode2022.ToIntOrSpaceArr,
 	)
 	if err != nil {
 		res = err.Error()
@@ -94,7 +94,7 @@ func t1_1() string {
 func t1_2() string {
 	res, err := adventofcode2022.Task1_2(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day1.data"},
-		adventofcode2022.ToLines,
+		adventofcode2022.ToIntOrSpaceArr,
 	)
 	if err != nil {
 		return err.Error()
@@ -105,7 +105,7 @@ func t1_2() string {
 func t2_1() string {
 	res, err := adventofcode2022.Task2_1(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day2.data"},
-		adventofcode2022.ToTuple,
+		adventofcode2022.ToTupleRPSArr,
 	)
 	if err != nil {
 		return err.Error()
@@ -116,7 +116,7 @@ func t2_1() string {
 func t2_2() string {
 	res, err := adventofcode2022.Task2_2(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day2.data"},
-		adventofcode2022.ToTuple,
+		adventofcode2022.ToTupleRPSArr,
 	)
 	if err != nil {
 		return err.Error()
@@ -127,7 +127,7 @@ func t2_2() string {
 func t3_1() string {
 	res, err := adventofcode2022.Task3_1(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day3.data"},
-		adventofcode2022.ToCharArr,
+		adventofcode2022.ToTupleIntArr,
 	)
 	if err != nil {
 		return err.Error()
@@ -138,7 +138,7 @@ func t3_1() string {
 func t3_2() string {
 	res, err := adventofcode2022.Task3_2(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day3.data"},
-		adventofcode2022.ToArrOfIntArr,
+		adventofcode2022.To3DArray,
 	)
 	if err != nil {
 		return err.Error()
