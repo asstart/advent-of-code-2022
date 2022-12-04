@@ -52,7 +52,7 @@ func getPriority(r rune) int {
 	}
 }
 
-//Solution in this task is only for group of sequences of items
+//Solution in this task is only for group of two sequences of items
 //General solution can be found in Task3_2
 func Task3_1(ir InputReader, convertInput func(ir InputReader) []TupleIntArr) (string, error) {
 	data := convertInput(ir)

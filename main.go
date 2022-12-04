@@ -51,6 +51,8 @@ var tasks = map[string]RunFunc{
 	"2_2": t2_2,
 	"3_1": t3_1,
 	"3_2": t3_2,
+	"4_1": t4_1,
+	"4_2": t4_2,
 }
 
 func runAll() {
@@ -137,6 +139,28 @@ func t3_2() string {
 	res, err := adventofcode2022.Task3_2(
 		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day3.data"},
 		adventofcode2022.ToArrOfIntArr,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t4_1() string {
+	res, err := adventofcode2022.Task4_1(
+		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day4.data"},
+		adventofcode2022.ToTupleSegment,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t4_2() string {
+	res, err := adventofcode2022.Task4_2(
+		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day4.data"},
+		adventofcode2022.ToTupleSegment,
 	)
 	if err != nil {
 		return err.Error()
