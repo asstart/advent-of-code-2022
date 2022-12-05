@@ -10,8 +10,13 @@ type InputReader interface {
 	GetInput() ([]string, error)
 }
 
+type Options struct {
+	TrimLine bool
+}
+
 type FileToStringsInputReader struct {
 	Path string
+	Opts Options
 }
 
 func (fts *FileToStringsInputReader) GetInput() ([]string, error) {
@@ -25,9 +30,11 @@ func (fts *FileToStringsInputReader) GetInput() ([]string, error) {
 
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
-		line := strings.TrimSpace(sc.Text())
+		line := sc.Text()
+		if fts.Opts.TrimLine {
+			line = strings.TrimSpace(line)
+		}
 		lines = append(lines, line)
-
 	}
 
 	if err := sc.Err(); err != nil {

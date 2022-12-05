@@ -53,6 +53,8 @@ var tasks = map[string]RunFunc{
 	"3_2": t3_2,
 	"4_1": t4_1,
 	"4_2": t4_2,
+	"5_1": t5_1,
+	"5_2": t5_2,
 }
 
 func runAll() {
@@ -82,7 +84,7 @@ func runTask(o opts) {
 
 func t1_1() string {
 	res, err := adventofcode2022.Task1_1(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day1.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day1.data"},
 		adventofcode2022.ToIntOrSpaceArr,
 	)
 	if err != nil {
@@ -93,7 +95,7 @@ func t1_1() string {
 
 func t1_2() string {
 	res, err := adventofcode2022.Task1_2(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day1.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day1.data"},
 		adventofcode2022.ToIntOrSpaceArr,
 	)
 	if err != nil {
@@ -104,7 +106,7 @@ func t1_2() string {
 
 func t2_1() string {
 	res, err := adventofcode2022.Task2_1(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day2.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day2.data"},
 		adventofcode2022.ToTupleRPSArr,
 	)
 	if err != nil {
@@ -115,7 +117,7 @@ func t2_1() string {
 
 func t2_2() string {
 	res, err := adventofcode2022.Task2_2(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day2.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day2.data"},
 		adventofcode2022.ToTupleRPSArr,
 	)
 	if err != nil {
@@ -126,7 +128,7 @@ func t2_2() string {
 
 func t3_1() string {
 	res, err := adventofcode2022.Task3_1(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day3.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day3.data"},
 		adventofcode2022.ToTupleIntArr,
 	)
 	if err != nil {
@@ -137,7 +139,7 @@ func t3_1() string {
 
 func t3_2() string {
 	res, err := adventofcode2022.Task3_2(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day3.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day3.data"},
 		adventofcode2022.To3DArray,
 	)
 	if err != nil {
@@ -148,7 +150,7 @@ func t3_2() string {
 
 func t4_1() string {
 	res, err := adventofcode2022.Task4_1(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day4.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day4.data"},
 		adventofcode2022.ToTupleSegment,
 	)
 	if err != nil {
@@ -159,8 +161,30 @@ func t4_1() string {
 
 func t4_2() string {
 	res, err := adventofcode2022.Task4_2(
-		&adventofcode2022.FileToStringsInputReader{"adventofcode2022/day4.data"},
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day4.data"},
 		adventofcode2022.ToTupleSegment,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t5_1() string {
+	res, err := adventofcode2022.Task5_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day5.data"},
+		adventofcode2022.ToStacksAndMoves,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t5_2() string {
+	res, err := adventofcode2022.Task5_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day5.data"},
+		adventofcode2022.ToStacksAndMoves,
 	)
 	if err != nil {
 		return err.Error()
