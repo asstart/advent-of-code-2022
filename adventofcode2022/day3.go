@@ -47,8 +47,8 @@ func getPriority(r rune) int {
 	}
 }
 
-//Solution in this task is only for group of two sequences of items
-//General solution can be found in Task3_2
+// Solution in this task is only for group of two sequences of items
+// General solution can be found in Task3_2
 func Task3_1(ir InputReader, convertInput func(ir InputReader) ([]TupleIntArr, error)) (string, error) {
 	data, err := convertInput(ir)
 	if err != nil {
@@ -133,12 +133,14 @@ func storageIdx(bpNum int, item int) int {
 //
 // [][][]int is:
 // groups[
+//
 //	backpups_in_group[
 //		items_in_backpack[
 //			item_value
 //			]
 //		]
 //	]
+//
 // ]
 func Task3_2(ir InputReader, convertInput func(ir InputReader, groups int) ([][][]int, error)) (string, error) {
 	groupSize := 3

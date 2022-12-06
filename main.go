@@ -55,6 +55,8 @@ var tasks = map[string]RunFunc{
 	"4_2": t4_2,
 	"5_1": t5_1,
 	"5_2": t5_2,
+	"6_1": t6_1,
+	"6_2": t6_2,
 }
 
 func runAll() {
@@ -185,6 +187,28 @@ func t5_2() string {
 	res, err := adventofcode2022.Task5_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day5.data"},
 		adventofcode2022.ToStacksAndMoves,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t6_1() string {
+	res, err := adventofcode2022.Task6_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day6.data"},
+		adventofcode2022.ToSingleLine,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t6_2() string {
+	res, err := adventofcode2022.Task6_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day6.data"},
+		adventofcode2022.ToSingleLine,
 	)
 	if err != nil {
 		return err.Error()
