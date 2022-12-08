@@ -12,6 +12,7 @@ import (
 type opts struct {
 	N string `short:"n"  description:"Number of task in format day_part, like 1_1, 1_2"`
 	A bool   `short:"a"  descriotion:"Run all tasks"`
+	D bool   `short:"d" description:"Debug mode"`
 }
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 	}
 
 	if o.A {
-		runAll()
+		runAll(o)
 		os.Exit(0)
 	}
 
@@ -42,7 +43,7 @@ func main() {
 	}
 }
 
-type RunFunc func() string
+type RunFunc func(o opts) string
 
 var tasks = map[string]RunFunc{
 	"1_1": t1_1,
@@ -59,9 +60,11 @@ var tasks = map[string]RunFunc{
 	"6_2": t6_2,
 	"7_1": t7_1,
 	"7_2": t7_2,
+	"8_1": t8_1,
+	"8_2": t8_2,
 }
 
-func runAll() {
+func runAll(o opts) {
 	keys := make([]string, 0, len(tasks))
 	for k := range tasks {
 		keys = append(keys, k)
@@ -71,7 +74,7 @@ func runAll() {
 
 	for _, k := range keys {
 		f := tasks[k]
-		r := f()
+		r := f(o)
 		fmt.Printf("Running task: %v\nResult      : %v\n", k, r)
 	}
 }
@@ -82,11 +85,11 @@ func runTask(o opts) {
 		fmt.Printf("Task: %v not found\n")
 		os.Exit(1)
 	}
-	r := f()
+	r := f(o)
 	fmt.Printf("Running task: %v\nResult      : %v\n", o.N, r)
 }
 
-func t1_1() string {
+func t1_1(o opts) string {
 	res, err := adventofcode2022.Task1_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day1.data"},
 		adventofcode2022.ToIntOrSpaceArr,
@@ -97,7 +100,7 @@ func t1_1() string {
 	return res
 }
 
-func t1_2() string {
+func t1_2(o opts) string {
 	res, err := adventofcode2022.Task1_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day1.data"},
 		adventofcode2022.ToIntOrSpaceArr,
@@ -108,7 +111,7 @@ func t1_2() string {
 	return res
 }
 
-func t2_1() string {
+func t2_1(o opts) string {
 	res, err := adventofcode2022.Task2_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day2.data"},
 		adventofcode2022.ToTupleRPSArr,
@@ -119,7 +122,7 @@ func t2_1() string {
 	return res
 }
 
-func t2_2() string {
+func t2_2(o opts) string {
 	res, err := adventofcode2022.Task2_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day2.data"},
 		adventofcode2022.ToTupleRPSArr,
@@ -130,7 +133,7 @@ func t2_2() string {
 	return res
 }
 
-func t3_1() string {
+func t3_1(o opts) string {
 	res, err := adventofcode2022.Task3_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day3.data"},
 		adventofcode2022.ToTupleIntArr,
@@ -141,7 +144,7 @@ func t3_1() string {
 	return res
 }
 
-func t3_2() string {
+func t3_2(o opts) string {
 	res, err := adventofcode2022.Task3_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day3.data"},
 		adventofcode2022.To3DArray,
@@ -152,7 +155,7 @@ func t3_2() string {
 	return res
 }
 
-func t4_1() string {
+func t4_1(o opts) string {
 	res, err := adventofcode2022.Task4_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day4.data"},
 		adventofcode2022.ToTupleSegment,
@@ -163,7 +166,7 @@ func t4_1() string {
 	return res
 }
 
-func t4_2() string {
+func t4_2(o opts) string {
 	res, err := adventofcode2022.Task4_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day4.data"},
 		adventofcode2022.ToTupleSegment,
@@ -174,7 +177,7 @@ func t4_2() string {
 	return res
 }
 
-func t5_1() string {
+func t5_1(o opts) string {
 	res, err := adventofcode2022.Task5_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day5.data"},
 		adventofcode2022.ToStacksAndMoves,
@@ -185,7 +188,7 @@ func t5_1() string {
 	return res
 }
 
-func t5_2() string {
+func t5_2(o opts) string {
 	res, err := adventofcode2022.Task5_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day5.data"},
 		adventofcode2022.ToStacksAndMoves,
@@ -196,7 +199,7 @@ func t5_2() string {
 	return res
 }
 
-func t6_1() string {
+func t6_1(o opts) string {
 	res, err := adventofcode2022.Task6_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day6.data"},
 		adventofcode2022.ToSingleLine,
@@ -207,7 +210,7 @@ func t6_1() string {
 	return res
 }
 
-func t6_2() string {
+func t6_2(o opts) string {
 	res, err := adventofcode2022.Task6_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day6.data"},
 		adventofcode2022.ToSingleLine,
@@ -218,7 +221,7 @@ func t6_2() string {
 	return res
 }
 
-func t7_1() string {
+func t7_1(o opts) string {
 	res, err := adventofcode2022.Task7_1(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day7.data"},
 		adventofcode2022.ToCmdQueue,
@@ -229,10 +232,34 @@ func t7_1() string {
 	return res
 }
 
-func t7_2() string {
+func t7_2(o opts) string {
 	res, err := adventofcode2022.Task7_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day7.data"},
 		adventofcode2022.ToCmdQueue,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t8_1(o opts) string {
+	res, err := adventofcode2022.Task8_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day8.data"},
+		adventofcode2022.To2DTreeInfoArray,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t8_2(o opts) string {
+	res, err := adventofcode2022.Task8_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day8.data"},
+		adventofcode2022.To2DTreeInfoArray,
+		o.D,
 	)
 	if err != nil {
 		return err.Error()
