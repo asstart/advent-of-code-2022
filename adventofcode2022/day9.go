@@ -253,8 +253,9 @@ func Task9_2(ir InputReader, cnvrtInpt func(InputReader) ([]KnotMove, error), de
 		f, err := os.Create("debug_d9.debug")
 		if err != nil {
 			fmt.Printf("can't crete debug file: %v", err)
+		} else {
+			debugOutput(state.Recorders[9].Positions, f)
 		}
-		debugOutput(state.Recorders[9].Positions, f)
 	}
 
 	return fmt.Sprintf("Result: %v", len(uniqueTailPos)), nil
