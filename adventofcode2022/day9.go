@@ -33,18 +33,18 @@ func DirectionOf(s string) (Direction, error) {
 	}
 }
 
-type M struct {
+type KnotMove struct {
 	Direction Direction
 	Count     int
 }
 
-func ToMoves(ir InputReader) ([]M, error) {
+func ToMoves(ir InputReader) ([]KnotMove, error) {
 	lines, err := ir.GetInput()
 	if err != nil {
 		return nil, err
 	}
 
-	moves := []M{}
+	moves := []KnotMove{}
 	for _, line := range lines {
 		splitted := strings.Split(line, " ")
 		if len(splitted) != 2 {
@@ -59,7 +59,7 @@ func ToMoves(ir InputReader) ([]M, error) {
 			return nil, err
 		}
 		moves = append(moves,
-			M{
+			KnotMove{
 				Direction: direction,
 				Count:     count,
 			},
@@ -73,7 +73,7 @@ type Point struct {
 	Y int
 }
 
-type THState struct {
+type KnotsState struct {
 	Knots     []Point
 	Recorders map[int]PosRecorder
 }
@@ -82,10 +82,10 @@ type PosRecorder struct {
 	Positions []Point
 }
 
-func (s *THState) calcMove(move M) {
+func (s *KnotsState) calcMove(move KnotMove) {
 	for i := 0; i < move.Count; i++ {
 		head := &s.Knots[0]
-		s.moveHead1Step(head, move.Direction)
+		s.move1Step(head, move.Direction)
 		s.recordPoistion(0)
 		for j := 1; j < len(s.Knots); j++ {
 			hIdx := j - 1
@@ -101,14 +101,14 @@ func (s *THState) calcMove(move M) {
 			// there're can be 2 moves if it's diagonal move, we don't need to record intermidiate tail poistion
 			// in this case, only the final
 			for _, m := range tm {
-				s.moveTail1Step(tail, m.Direction)
+				s.move1Step(tail, m.Direction)
 			}
 			s.recordPoistion(tIdx)
 		}
 	}
 }
 
-func (THState) moveHead1Step(head *Point, direction Direction) {
+func (KnotsState) move1Step(head *Point, direction Direction) {
 	switch direction {
 	case UP:
 		head.Y += 1
@@ -121,20 +121,7 @@ func (THState) moveHead1Step(head *Point, direction Direction) {
 	}
 }
 
-func (THState) moveTail1Step(tail *Point, direction Direction) {
-	switch direction {
-	case UP:
-		tail.Y += 1
-	case DOWN:
-		tail.Y -= 1
-	case LEFT:
-		tail.X -= 1
-	case RIGHT:
-		tail.X += 1
-	}
-}
-
-func (s *THState) recordPoistion(knot int) {
+func (s *KnotsState) recordPoistion(knot int) {
 	_, ok := s.Recorders[knot]
 	if !ok {
 		s.Recorders[knot] = PosRecorder{Positions: []Point{}}
@@ -144,22 +131,22 @@ func (s *THState) recordPoistion(knot int) {
 	s.Recorders[knot] = rcrd
 }
 
-func (THState) determineTailAction(h Point, t Point) []M {
+func (KnotsState) determineTailAction(h Point, t Point) []KnotMove {
 	// T and H intersects
 	if h.X == t.X && h.Y == t.Y {
-		return []M{}
+		return []KnotMove{}
 	}
 	// T and H on the same horizontal line
 	if h.X == t.X {
 		// T and H adjacement by vertical
 		if h.Y == t.Y+1 || h.Y == t.Y-1 {
-			return []M{}
+			return []KnotMove{}
 		} else {
 			diff := h.Y - t.Y
 			if diff > 0 {
-				return []M{M{Direction: UP, Count: 1}}
+				return []KnotMove{{Direction: UP, Count: 1}}
 			} else {
-				return []M{M{Direction: DOWN, Count: 1}}
+				return []KnotMove{{Direction: DOWN, Count: 1}}
 			}
 		}
 	}
@@ -167,13 +154,13 @@ func (THState) determineTailAction(h Point, t Point) []M {
 	if h.Y == t.Y {
 		// T and H adjacement by horizontal
 		if h.X == t.X+1 || h.X == t.X-1 {
-			return []M{}
+			return []KnotMove{}
 		} else {
 			diff := h.X - t.X
 			if diff > 0 {
-				return []M{M{Direction: RIGHT, Count: 1}}
+				return []KnotMove{{Direction: RIGHT, Count: 1}}
 			} else {
-				return []M{M{Direction: LEFT, Count: 1}}
+				return []KnotMove{{Direction: LEFT, Count: 1}}
 			}
 		}
 	}
@@ -184,26 +171,26 @@ func (THState) determineTailAction(h Point, t Point) []M {
 			h.X == t.X-1 && h.Y == t.Y+1 ||
 			h.X == t.X+1 && h.Y == t.Y-1 ||
 			h.X == t.X+1 && h.Y == t.Y+1 {
-			return []M{}
+			return []KnotMove{}
 		} else {
 			diffX := h.X - t.X
 			diffY := h.Y - t.Y
 			if diffX > 0 && diffY > 0 {
-				return []M{M{Direction: UP, Count: 1}, M{Direction: RIGHT, Count: 1}}
+				return []KnotMove{{Direction: UP, Count: 1}, {Direction: RIGHT, Count: 1}}
 			} else if diffX > 0 && diffY < 0 {
-				return []M{M{Direction: DOWN, Count: 1}, M{Direction: RIGHT, Count: 1}}
+				return []KnotMove{{Direction: DOWN, Count: 1}, {Direction: RIGHT, Count: 1}}
 			} else if diffX < 0 && diffY > 0 {
-				return []M{M{Direction: UP, Count: 1}, M{Direction: LEFT, Count: 1}}
+				return []KnotMove{{Direction: UP, Count: 1}, {Direction: LEFT, Count: 1}}
 			} else {
-				return []M{M{Direction: DOWN, Count: 1}, M{Direction: LEFT, Count: 1}}
+				return []KnotMove{{Direction: DOWN, Count: 1}, {Direction: LEFT, Count: 1}}
 			}
 		}
 	}
-	// Shouldn't be here
-	panic("unexpected")
+	// Mustn't be here in any case
+	panic(fmt.Errorf("unexpected knots: head:%v, tail:%v", h, t))
 }
 
-func Task9_1(ir InputReader, cnvrtInpt func(InputReader) ([]M, error), debug bool) (string, error) {
+func Task9_1(ir InputReader, cnvrtInpt func(InputReader) ([]KnotMove, error), debug bool) (string, error) {
 	moves, err := cnvrtInpt(ir)
 	if err != nil {
 		return "", err
@@ -212,12 +199,8 @@ func Task9_1(ir InputReader, cnvrtInpt func(InputReader) ([]M, error), debug boo
 	knotsCount := 2
 	knots := make([]Point, knotsCount)
 	recorders := map[int]PosRecorder{}
-	for i := 0; i < 2; i++ {
-		knots[i] = Point{X: 0, Y: 0}
-		recorders[i] = PosRecorder{Positions: []Point{}}
-	}
 
-	state := THState{
+	state := KnotsState{
 		Knots:     knots,
 		Recorders: recorders,
 	}
@@ -242,7 +225,7 @@ func Task9_1(ir InputReader, cnvrtInpt func(InputReader) ([]M, error), debug boo
 	return fmt.Sprintf("Result: %v", len(uniqueTailPos)), nil
 }
 
-func Task9_2(ir InputReader, cnvrtInpt func(InputReader) ([]M, error), debug bool) (string, error) {
+func Task9_2(ir InputReader, cnvrtInpt func(InputReader) ([]KnotMove, error), debug bool) (string, error) {
 	moves, err := cnvrtInpt(ir)
 	if err != nil {
 		return "", err
@@ -251,12 +234,8 @@ func Task9_2(ir InputReader, cnvrtInpt func(InputReader) ([]M, error), debug boo
 	knotsCount := 10
 	knots := make([]Point, knotsCount)
 	recorders := map[int]PosRecorder{}
-	for i := 0; i < 2; i++ {
-		knots[i] = Point{X: 0, Y: 0}
-		recorders[i] = PosRecorder{Positions: []Point{}}
-	}
 
-	state := THState{
+	state := KnotsState{
 		Knots:     knots,
 		Recorders: recorders,
 	}
