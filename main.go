@@ -46,24 +46,26 @@ func main() {
 type RunFunc func(o opts) string
 
 var tasks = map[string]RunFunc{
-	"1_1": t1_1,
-	"1_2": t1_2,
-	"2_1": t2_1,
-	"2_2": t2_2,
-	"3_1": t3_1,
-	"3_2": t3_2,
-	"4_1": t4_1,
-	"4_2": t4_2,
-	"5_1": t5_1,
-	"5_2": t5_2,
-	"6_1": t6_1,
-	"6_2": t6_2,
-	"7_1": t7_1,
-	"7_2": t7_2,
-	"8_1": t8_1,
-	"8_2": t8_2,
-	"9_1": t9_1,
-	"9_2": t9_2,
+	"1_1":  t1_1,
+	"1_2":  t1_2,
+	"2_1":  t2_1,
+	"2_2":  t2_2,
+	"3_1":  t3_1,
+	"3_2":  t3_2,
+	"4_1":  t4_1,
+	"4_2":  t4_2,
+	"5_1":  t5_1,
+	"5_2":  t5_2,
+	"6_1":  t6_1,
+	"6_2":  t6_2,
+	"7_1":  t7_1,
+	"7_2":  t7_2,
+	"8_1":  t8_1,
+	"8_2":  t8_2,
+	"9_1":  t9_1,
+	"9_2":  t9_2,
+	"10_1": t10_1,
+	"10_2": t10_2,
 }
 
 func runAll(o opts) {
@@ -285,6 +287,30 @@ func t9_2(o opts) string {
 	res, err := adventofcode2022.Task9_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day9.data"},
 		adventofcode2022.ToMoves,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t10_1(o opts) string {
+	res, err := adventofcode2022.Task10_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day10.data"},
+		adventofcode2022.ToStatefulCmds,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t10_2(o opts) string {
+	res, err := adventofcode2022.Task10_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day10.data"},
+		adventofcode2022.ToStatefulCmds,
 		o.D,
 	)
 	if err != nil {
