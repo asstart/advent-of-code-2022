@@ -66,6 +66,8 @@ var tasks = map[string]RunFunc{
 	"9_2":  t9_2,
 	"10_1": t10_1,
 	"10_2": t10_2,
+	"11_1": t11_1,
+	"11_2": t11_2,
 }
 
 func runAll(o opts) {
@@ -86,7 +88,7 @@ func runAll(o opts) {
 func runTask(o opts) {
 	f, ok := tasks[o.N]
 	if !ok {
-		fmt.Printf("Task: %v not found\n")
+		fmt.Printf("Task: %v not found\n", o.N)
 		os.Exit(1)
 	}
 	r := f(o)
@@ -311,6 +313,30 @@ func t10_2(o opts) string {
 	res, err := adventofcode2022.Task10_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day10.data"},
 		adventofcode2022.ToStatefulCmds,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t11_1(o opts) string {
+	res, err := adventofcode2022.Task11_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day11.data"},
+		adventofcode2022.ToMonkeys,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t11_2(o opts) string {
+	res, err := adventofcode2022.Task11_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day11.data"},
+		adventofcode2022.ToMonkeys,
 		o.D,
 	)
 	if err != nil {
