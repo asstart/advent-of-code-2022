@@ -68,6 +68,8 @@ var tasks = map[string]RunFunc{
 	"10_2": t10_2,
 	"11_1": t11_1,
 	"11_2": t11_2,
+	"12_1": t12_1,
+	"12_2": t12_2,
 }
 
 func runAll(o opts) {
@@ -337,6 +339,30 @@ func t11_2(o opts) string {
 	res, err := adventofcode2022.Task11_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day11.data"},
 		adventofcode2022.ToMonkeys,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t12_1(o opts) string {
+	res, err := adventofcode2022.Task12_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day12.data"},
+		adventofcode2022.ToElevationMap,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t12_2(o opts) string {
+	res, err := adventofcode2022.Task12_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day12.data"},
+		adventofcode2022.ToElevationMap,
 		o.D,
 	)
 	if err != nil {
