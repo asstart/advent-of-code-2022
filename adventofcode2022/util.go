@@ -51,9 +51,22 @@ func Max(arg1 int, arg2 int) int {
 	return arg2
 }
 
+func Min(arg1 int, arg2 int) int {
+	if arg1 < arg2 {
+		return arg1
+	}
+	return arg2
+}
+
 func Abs(arg int) int {
 	if arg > 0 {
 		return arg
 	}
 	return arg * -1
+}
+
+func Swap(arg1 *int, arg2 *int) {
+	tmp := *arg2
+	*arg2 = *arg1
+	*arg1 = tmp
 }

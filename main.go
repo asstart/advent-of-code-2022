@@ -77,6 +77,8 @@ var tasks = map[string]RunFunc{
 	"12_2": t12_2,
 	"13_1": t13_1,
 	"13_2": t13_2,
+	"14_1": t14_1,
+	"14_2": t14_2,
 }
 
 func runAll(o opts) {
@@ -99,10 +101,12 @@ func runTask(o opts) {
 	if ok {
 		r := f(o)
 		fmt.Printf("Running task: %v\nResult      : %v\n", o.N, r)
+		os.Exit(0)
 	}
 	vf, ok := vtasks[o.N]
 	if ok {
 		pixelgl.Run(vf)
+		os.Exit(0)
 	} else {
 		fmt.Printf("Task: %v not found\n", o.N)
 		os.Exit(1)
@@ -406,6 +410,30 @@ func t13_2(o opts) string {
 	res, err := adventofcode2022.Task13_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day13.data"},
 		adventofcode2022.ToArrTupleString,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t14_1(o opts) string {
+	res, err := adventofcode2022.Task14_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day14.data"},
+		adventofcode2022.ToRockMap,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t14_2(o opts) string {
+	res, err := adventofcode2022.Task14_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day14.data"},
+		adventofcode2022.ToRockMap,
 		o.D,
 	)
 	if err != nil {
