@@ -50,3 +50,10 @@ func Max(arg1 int, arg2 int) int {
 	}
 	return arg2
 }
+
+func Abs(arg int) int {
+	if arg > 0 {
+		return arg
+	}
+	return arg * -1
+}

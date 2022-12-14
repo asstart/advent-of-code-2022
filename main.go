@@ -6,12 +6,13 @@ import (
 	"sort"
 
 	"github.com/asstart/advent-of-code-2022/adventofcode2022"
+	"github.com/faiface/pixel/pixelgl"
 	"github.com/jessevdk/go-flags"
 )
 
 type opts struct {
 	N string `short:"n"  description:"Number of task in format day_part, like 1_1, 1_2"`
-	A bool   `short:"a"  descriotion:"Run all tasks"`
+	A bool   `short:"a"  description:"Run all tasks"`
 	D bool   `short:"d" description:"Debug mode"`
 }
 
@@ -44,6 +45,10 @@ func main() {
 }
 
 type RunFunc func(o opts) string
+
+var vtasks = map[string]func(){
+	"12_1v": t12_1v,
+}
 
 var tasks = map[string]RunFunc{
 	"1_1":  t1_1,
@@ -91,12 +96,17 @@ func runAll(o opts) {
 
 func runTask(o opts) {
 	f, ok := tasks[o.N]
-	if !ok {
+	if ok {
+		r := f(o)
+		fmt.Printf("Running task: %v\nResult      : %v\n", o.N, r)
+	}
+	vf, ok := vtasks[o.N]
+	if ok {
+		pixelgl.Run(vf)
+	} else {
 		fmt.Printf("Task: %v not found\n", o.N)
 		os.Exit(1)
 	}
-	r := f(o)
-	fmt.Printf("Running task: %v\nResult      : %v\n", o.N, r)
 }
 
 func t1_1(o opts) string {
@@ -359,6 +369,13 @@ func t12_1(o opts) string {
 		return err.Error()
 	}
 	return res
+}
+
+func t12_1v() {
+	adventofcode2022.Task12_1V(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day12.data"},
+		adventofcode2022.ToElevationMap,
+	)
 }
 
 func t12_2(o opts) string {

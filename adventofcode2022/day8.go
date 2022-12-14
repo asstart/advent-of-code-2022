@@ -14,7 +14,7 @@ const (
 )
 
 type TreeInfo struct {
-	Hight      int
+	Hight  int
 	VLeft  VStatus
 	DLeft  int
 	VTop   VStatus
