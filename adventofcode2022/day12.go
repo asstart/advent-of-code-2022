@@ -19,7 +19,6 @@ import (
 
 type Step struct {
 	Destination Point
-	Direction   Direction
 }
 
 type ElevationMap struct {
@@ -58,45 +57,45 @@ func ToElevationMap(ir InputReader) (ElevationMap, error) {
 	return res, nil
 }
 
-func bfsIter(graphMatrix [][]int, visited [][]int, start Point, finish Point, queue *[]Step) bool {
+func bfsIter(graphMatrix [][]int, visited [][]int, start Point, finish Point, queue *[]Point) bool {
 	cq := *queue
 	curr := cq[0]
 	cq = cq[1:]
 
-	i, j := curr.Destination.Y, curr.Destination.X
+	i, j := curr.Y, curr.X
 	if finish.X == j && finish.Y == i {
 		finish = Point{X: j, Y: i}
 		return true
 	}
-	if i < len(graphMatrix)-1 && curr.Direction != UP {
+	if i < len(graphMatrix)-1 {
 		nextI, nextJ := i+1, j
 		if (graphMatrix[i][j]-graphMatrix[nextI][nextJ] >= 0 || graphMatrix[i][j]-graphMatrix[nextI][nextJ] == -1) &&
 			visited[nextI][nextJ] == 0 {
-			cq = append(cq, Step{Destination: Point{X: nextJ, Y: nextI}, Direction: DOWN})
+			cq = append(cq, Point{X: nextJ, Y: nextI})
 			visited[nextI][nextJ] = visited[i][j] + 1
 		}
 	}
-	if j < len(graphMatrix[0])-1 && curr.Direction != LEFT {
+	if j < len(graphMatrix[0])-1 {
 		nextI, nextJ := i, j+1
 		if (graphMatrix[i][j]-graphMatrix[nextI][nextJ] >= 0 || graphMatrix[i][j]-graphMatrix[nextI][nextJ] == -1) &&
 			visited[nextI][nextJ] == 0 {
-			cq = append(cq, Step{Destination: Point{X: nextJ, Y: nextI}, Direction: RIGHT})
+			cq = append(cq, Point{X: nextJ, Y: nextI})
 			visited[nextI][nextJ] = visited[i][j] + 1
 		}
 	}
-	if i > 0 && curr.Direction != DOWN {
+	if i > 0 {
 		nextI, nextJ := i-1, j
 		if (graphMatrix[i][j]-graphMatrix[nextI][nextJ] >= 0 || graphMatrix[i][j]-graphMatrix[nextI][nextJ] == -1) &&
 			visited[nextI][nextJ] == 0 {
-			cq = append(cq, Step{Destination: Point{X: nextJ, Y: nextI}, Direction: UP})
+			cq = append(cq, Point{X: nextJ, Y: nextI})
 			visited[nextI][nextJ] = visited[i][j] + 1
 		}
 	}
-	if j > 0 && curr.Direction != RIGHT {
+	if j > 0 {
 		nextI, nextJ := i, j-1
 		if (graphMatrix[i][j]-graphMatrix[nextI][nextJ] >= 0 || graphMatrix[i][j]-graphMatrix[nextI][nextJ] == -1) &&
 			visited[nextI][nextJ] == 0 {
-			cq = append(cq, Step{Destination: Point{X: nextJ, Y: nextI}, Direction: LEFT})
+			cq = append(cq, Point{X: nextJ, Y: nextI})
 			visited[nextI][nextJ] = visited[i][j] + 1
 		}
 	}
@@ -110,9 +109,9 @@ func bfs(graphMatrix [][]int, start Point, finish Point) [][]int {
 		visited = append(visited, make([]int, len(graphMatrix[0])))
 	}
 
-	queue := []Step{}
+	queue := []Point{}
 
-	queue = append(queue, Step{Destination: Point{X: start.X, Y: start.Y}, Direction: UP})
+	queue = append(queue, Point{X: start.X, Y: start.Y})
 	visited[start.Y][start.X] = 0
 	var finished bool
 
@@ -312,7 +311,7 @@ func Task12_1V(ir InputReader, cnvrtInpt func(InputReader) (ElevationMap, error)
 	}
 
 	tick := make(chan struct{}, 1)
-	d := 6000000000 * time.Nanosecond
+	d := 60000000 * time.Nanosecond
 	var tickInt *time.Duration = &d
 
 	go bfsV(data.Map, data.Start, data.Finish, lastV, tick, lastStep, visitedOnStep)
@@ -396,9 +395,9 @@ func bfsV(graphMatrix [][]int, start Point, finish Point, lastV *Point, tick <-c
 	for i := 0; i < len(graphMatrix); i++ {
 		visited = append(visited, make([]int, len(graphMatrix[0])))
 	}
-	queue := []Step{}
+	queue := []Point{}
 
-	queue = append(queue, Step{Destination: Point{X: start.X, Y: start.Y}, Direction: UP})
+	queue = append(queue, Point{X: start.X, Y: start.Y})
 	visited[start.Y][start.X] = 0
 
 	var finished bool
@@ -407,9 +406,9 @@ func bfsV(graphMatrix [][]int, start Point, finish Point, lastV *Point, tick <-c
 		case <-tick:
 			curr := queue[0]
 			*step++
-			visitedOnStep[curr.Destination.Y][curr.Destination.X] = *step
+			visitedOnStep[curr.Y][curr.X] = *step
 
-			*lastV = curr.Destination
+			*lastV = curr
 
 			finished = bfsIter(graphMatrix, visited, start, finish, &queue)
 			if finished {
