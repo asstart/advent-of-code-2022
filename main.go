@@ -48,6 +48,7 @@ type RunFunc func(o opts) string
 
 var vtasks = map[string]func(){
 	"12_1v": t12_1v,
+	"14_2v": t14_2v,
 }
 
 var tasks = map[string]RunFunc{
@@ -440,4 +441,11 @@ func t14_2(o opts) string {
 		return err.Error()
 	}
 	return res
+}
+
+func t14_2v() {
+	adventofcode2022.Task14_2V(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day14.data"},
+		adventofcode2022.ToRockMap,
+	)
 }

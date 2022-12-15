@@ -34,3 +34,17 @@ go build -o aoc2022
 
 ![gif/d12p1.gif](gif/d12p1.gif)
 
+### [Day 14 Part2](https://adventofcode.com/2022/day/14)
+
+To build and run:
+
+```shell
+
+go build -o aoc2022
+
+./aoc2022 -n=14_2v
+
+```
+
+![gif/d14p2.gif](gif/d14p2.gif)
+

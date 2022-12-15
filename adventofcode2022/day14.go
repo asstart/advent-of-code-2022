@@ -2,11 +2,18 @@ package adventofcode2022
 
 import (
 	"fmt"
+	"image"
+	"image/draw"
 	"io"
 	"math"
 	"os"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/pixelgl"
+	"golang.org/x/image/colornames"
 )
 
 var mostLeft Point = Point{X: math.MaxInt32, Y: math.MaxInt32}
@@ -150,6 +157,80 @@ func Task14_2(ir InputReader, cnvrtInpt func(InputReader) (Cave, error), debug b
 	return fmt.Sprintf("%v", count), nil
 }
 
+func Task14_2V(ir InputReader, cnvrtInpt func(InputReader) (Cave, error)) {
+	cave, err := cnvrtInpt(ir)
+	if err != nil {
+		panic(err)
+	}
+
+	cave.MaxY += 2
+
+	mltpl := 3
+	shitf := 170
+	width := ((cave.MaxX + shitf) - (cave.MinX - shitf)) * mltpl
+	height := (cave.MaxY) * mltpl
+	shiftX := cave.MinX - shitf
+
+	field := make([][]int, height)
+	for i := 0; i < height; i++ {
+		field[i] = make([]int, width)
+		for j := 0; j < width; j++ {
+			_, ok := cave.Rocks[Point{X: j + shiftX, Y: i}]
+			if ok {
+				field[i][j] = 1
+			}
+		}
+	}
+
+	cfg := pixelgl.WindowConfig{
+		Title:  "AoC2022 - Day 14, Part 2",
+		Bounds: pixel.R(0, 0, float64(width), float64(height)),
+		VSync: true,
+	}
+
+	win, err := pixelgl.NewWindow(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	// sig := make(chan Point)
+
+	ticker := time.Tick(time.Nanosecond * 10000)
+	go emulateSanfallWithFloorSync(&cave, field, shiftX, ticker)
+	for !win.Closed() {
+		win.Update()
+		p := drawCaveField(field, width, height, mltpl)
+		s := pixel.NewSprite(p, p.Bounds())
+		m := pixel.IM.Moved(win.Bounds().Center())
+		s.Draw(win, m)
+	}
+
+}
+
+var (
+	rocks = colornames.Gray
+	sand  = colornames.Sandybrown
+	back  = colornames.Wheat
+)
+
+func drawCaveField(field [][]int, w int, h int, pxlMult int) *pixel.PictureData {
+	img := image.NewRGBA(image.Rect(0, 0, w, h))
+	draw.Draw(img, img.Bounds(), &image.Uniform{back}, image.Point{}, draw.Src)
+	for i := 0; i < len(field); i++ {
+		for j := 0; j < len(field[i]); j++ {
+			c := back
+			if field[i][j] == 1 {
+				c = rocks
+			} else if field[i][j] == 2 {
+				c = sand
+			}
+			rect := image.Rect(j*pxlMult, i*pxlMult, (j+1)*pxlMult, (i+1)*pxlMult)
+			draw.Draw(img, rect, &image.Uniform{c}, image.Point{}, draw.Over)
+		}
+	}
+	return pixel.PictureDataFromImage(img)
+}
+
 func emulateSandfallWithInfinityFloor(cave *Cave) int {
 	var currPoint Point
 	nextPoint := zeroPoint
@@ -164,9 +245,31 @@ func emulateSandfallWithInfinityFloor(cave *Cave) int {
 		nextPoint, prevGrainState = emulateSandGrainFallIfNoFloor(currPoint, cave)
 		if prevGrainState == Fell {
 			counter++
-			nextPoint = Point{X: 500, Y: 0}
+			nextPoint = zeroPoint
 		}
 
+	}
+	return counter
+}
+
+func emulateSanfallWithFloorSync(cave *Cave, field [][]int, shiftX int, delay <-chan time.Time) int {
+	var currPoint Point
+	nextPoint := zeroPoint
+	prevGrainState := Falling
+	counter := 0
+	for {
+		<-delay
+		currPoint = nextPoint
+		nextPoint, prevGrainState = emulateSandGrainFall(currPoint, cave)
+		if prevGrainState == Fell {
+			counter++
+			// if grain fell and fell position was the same as start
+			if currPoint == zeroPoint {
+				break
+			}
+			nextPoint = zeroPoint
+		}
+		field[currPoint.Y][currPoint.X-shiftX] = 2
 	}
 	return counter
 }
