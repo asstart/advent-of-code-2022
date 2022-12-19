@@ -92,7 +92,7 @@ func fw(dist [][]int) {
 	}
 }
 
-type Task16Store struct {
+type SearchState struct {
 	MinLeft  int
 	Pressure int
 }
@@ -106,14 +106,14 @@ func conatins(v int, arr []int) bool {
 	return false
 }
 
-func search(graph [][]int, curVertex int, path []int, prevKey string, storage map[string]Task16Store, valves map[int]int, initMinutes int) {
+func search(graph [][]int, curVertex int, path []int, prevKey string, storage map[string]SearchState, valves map[int]int, initMinutes int) {
 	for valve, pres := range valves {
 		if valve == curVertex || conatins(valve, path) {
 			continue
 		}
 		prev, ok := storage[prevKey]
 		if !ok {
-			prev = Task16Store{
+			prev = SearchState{
 				MinLeft:  initMinutes,
 				Pressure: 0,
 			}
@@ -131,7 +131,7 @@ func search(graph [][]int, curVertex int, path []int, prevKey string, storage ma
 		if nOk && nV.Pressure > nPressure {
 			continue
 		}
-		storage[nKey] = Task16Store{
+		storage[nKey] = SearchState{
 			MinLeft:  nMinLeft,
 			Pressure: nPressure,
 		}
@@ -157,7 +157,7 @@ func Task16_1(ir InputReader, cnvrtInpt func(InputReader) (Day16Inpt, error), de
 
 	fw(input.AdjacenyM)
 
-	storage := map[string]Task16Store{}
+	storage := map[string]SearchState{}
 	path := []int{}
 
 	search(input.AdjacenyM, 0, path, "", storage, input.ValvesPressure, 30)
@@ -180,7 +180,7 @@ func Task16_2(ir InputReader, cnvrtInpt func(InputReader) (Day16Inpt, error), de
 
 	fw(input.AdjacenyM)
 
-	storage := map[string]Task16Store{}
+	storage := map[string]SearchState{}
 	path := []int{}
 
 	search(input.AdjacenyM, 0, path, "", storage, input.ValvesPressure, 26)
