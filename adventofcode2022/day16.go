@@ -2,9 +2,7 @@ package adventofcode2022
 
 import (
 	"fmt"
-	"io"
 	"math"
-	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -69,7 +67,9 @@ func ToAdjacencyMatrix(ir InputReader) (Day16Inpt, error) {
 			m[idxFrom][idxTo] = 1
 			m[idxTo][idxFrom] = 1
 		}
-		valves[idxFrom] = rate
+		if rate != 0 {
+			valves[idxFrom] = rate
+		}
 	}
 	res := Day16Inpt{
 		AdjacenyM:      m,
@@ -94,44 +94,38 @@ func fw(dist [][]int) {
 
 type Task16Store struct {
 	MinLeft  int
-	Visited  map[int]bool
 	Pressure int
-	Path     []int
 }
 
-func iter(m [][]int, pos int, path []int, storage map[string]Task16Store, valves map[int]int, min int) {
-	col := pos
+func conatins(v int, arr []int) bool {
+	for _, i := range arr {
+		if v == i {
+			return true
+		}
+	}
+	return false
+}
+
+func search(graph [][]int, curVertex int, path []int, prevKey string, storage map[string]Task16Store, valves map[int]int, initMinutes int) {
 	for valve, pres := range valves {
-		if pres == 0 || valve == pos {
+		if valve == curVertex || conatins(valve, path) {
 			continue
 		}
-		prevKey := buildKey(path)
 		prev, ok := storage[prevKey]
 		if !ok {
 			prev = Task16Store{
-				MinLeft:  min,
-				Visited:  map[int]bool{},
+				MinLeft:  initMinutes,
 				Pressure: 0,
-				Path:     []int{},
 			}
-
 		}
-		if prev.Visited[valve] {
-			continue
-		}
+		
 		nPath := make([]int, len(path)+1)
 		copy(nPath, path)
 		nPath[len(path)] = valve
-		nMinLeft := prev.MinLeft - m[valve][col] - 1
+		nMinLeft := prev.MinLeft - graph[valve][curVertex] - 1
 		nPressure := prev.Pressure + nMinLeft*pres
 
 		nKey := buildKey(nPath)
-
-		nVisited := map[int]bool{}
-		for k, v := range prev.Visited {
-			nVisited[k] = v
-		}
-		nVisited[valve] = true
 
 		nV, nOk := storage[nKey]
 		if nOk && nV.Pressure > nPressure {
@@ -140,11 +134,9 @@ func iter(m [][]int, pos int, path []int, storage map[string]Task16Store, valves
 		storage[nKey] = Task16Store{
 			MinLeft:  nMinLeft,
 			Pressure: nPressure,
-			Visited:  nVisited,
-			Path:     append(prev.Path, valve),
 		}
 
-		iter(m, valve, nPath, storage, valves, min)
+		search(graph, valve, nPath, nKey, storage, valves, initMinutes)
 	}
 }
 
@@ -168,25 +160,15 @@ func Task16_1(ir InputReader, cnvrtInpt func(InputReader) (Day16Inpt, error), de
 	storage := map[string]Task16Store{}
 	path := []int{}
 
-	iter(input.AdjacenyM, 0, path, storage, input.ValvesPressure, 30)
+	search(input.AdjacenyM, 0, path, "", storage, input.ValvesPressure, 30)
 
 	maxP := 0
-	var resKey string
-	for k, v := range storage {
+	for _, v := range storage {
 		if v.Pressure > maxP {
 			maxP = v.Pressure
-			resKey = k
 		}
 	}
 
-	if debug {
-		f, err := os.Create("debug_d16p1.debug")
-		if err != nil {
-			return "", err
-		}
-		debugP1(input.AdjacenyM, f)
-	}
-	fmt.Printf("Res path: %v", storage[resKey])
 	return fmt.Sprintf("%v", maxP), nil
 }
 
@@ -201,7 +183,7 @@ func Task16_2(ir InputReader, cnvrtInpt func(InputReader) (Day16Inpt, error), de
 	storage := map[string]Task16Store{}
 	path := []int{}
 
-	iter(input.AdjacenyM, 0, path, storage, input.ValvesPressure, 26)
+	search(input.AdjacenyM, 0, path, "", storage, input.ValvesPressure, 26)
 
 	maxP := 0
 	for _, v := range storage {
@@ -231,22 +213,6 @@ func Task16_2(ir InputReader, cnvrtInpt func(InputReader) (Day16Inpt, error), de
 		}
 	}
 	return fmt.Sprintf("%v", MaxOf2), nil
-}
-
-func debugP1(adjacencyM [][]int, writer io.Writer) {
-	bld := strings.Builder{}
-	for i := 0; i < len(adjacencyM); i++ {
-		for j := 0; j < len(adjacencyM); j++ {
-			if adjacencyM[i][j] == math.MaxInt32 || adjacencyM[i][j] == 0 {
-				bld.WriteString(".")
-				continue
-			} else {
-				bld.WriteString(fmt.Sprintf("%v", adjacencyM[i][j]))
-			}
-		}
-		bld.WriteString("\n")
-	}
-	writer.Write([]byte(bld.String()))
 }
 
 func isDisjoint(arr1 []int, arr2 []int) bool {
