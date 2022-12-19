@@ -2,19 +2,7 @@ package adventofcode2022
 
 import "fmt"
 
-func ToSingleLine(ir InputReader) (string, error) {
-	lines, err := ir.GetInput()
-	if err != nil {
-		return "", err
-	}
 
-	if len(lines) != 1 {
-		return "", fmt.Errorf("expected 1 line, got: %v", len(lines))
-	}
-
-	return lines[0], nil
-
-}
 
 func Task6_1(ir InputReader, cnvrtInpt func(InputReader) (string, error)) (string, error) {
 	data, err := cnvrtInpt(ir)

@@ -9,14 +9,6 @@ import (
 	"strings"
 )
 
-type Direction int
-
-const (
-	UP Direction = iota
-	DOWN
-	LEFT
-	RIGHT
-)
 
 func DirectionOf(s string) (Direction, error) {
 	switch s {

@@ -2,6 +2,7 @@ package adventofcode2022
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -44,6 +45,29 @@ func (fts *FileToStringsInputReader) GetInput() ([]string, error) {
 	return lines, nil
 }
 
+func ToSingleLine(ir InputReader) (string, error) {
+	lines, err := ir.GetInput()
+	if err != nil {
+		return "", err
+	}
+
+	if len(lines) != 1 {
+		return "", fmt.Errorf("expected 1 line, got: %v", len(lines))
+	}
+
+	return lines[0], nil
+
+}
+
+type Direction int
+
+const (
+	UP Direction = iota
+	DOWN
+	LEFT
+	RIGHT
+)
+
 func Max(arg1 int, arg2 int) int {
 	if arg1 > arg2 {
 		return arg1
@@ -52,6 +76,13 @@ func Max(arg1 int, arg2 int) int {
 }
 
 func Min(arg1 int, arg2 int) int {
+	if arg1 < arg2 {
+		return arg1
+	}
+	return arg2
+}
+
+func Min64(arg1 int64, arg2 int64) int64 {
 	if arg1 < arg2 {
 		return arg1
 	}
