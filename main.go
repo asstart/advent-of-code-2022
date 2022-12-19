@@ -82,6 +82,8 @@ var tasks = map[string]RunFunc{
 	"14_2": t14_2,
 	"15_1": t15_1,
 	"15_2": t15_2,
+	"16_1": t16_1,
+	"16_2": t16_2,
 }
 
 func runAll(o opts) {
@@ -468,6 +470,30 @@ func t15_2(o opts) string {
 	res, err := adventofcode2022.Task15_2(
 		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day15.data"},
 		adventofcode2022.ToSensorsBeacons,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t16_1(o opts) string {
+	res, err := adventofcode2022.Task16_1(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day16.data"},
+		adventofcode2022.ToAdjacencyMatrix,
+		o.D,
+	)
+	if err != nil {
+		return err.Error()
+	}
+	return res
+}
+
+func t16_2(o opts) string {
+	res, err := adventofcode2022.Task16_2(
+		&adventofcode2022.FileToStringsInputReader{Path: "adventofcode2022/day16.data"},
+		adventofcode2022.ToAdjacencyMatrix,
 		o.D,
 	)
 	if err != nil {
