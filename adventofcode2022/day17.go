@@ -62,7 +62,7 @@ func Task17_1(ir InputReader, cnvrtInpt func(InputReader) ([]Direction, error), 
 	// Height of block's tower
 	floors := 0
 
-	figCount := 2022//100000000
+	figCount := 2022 //100000000
 	var stop bool
 
 	for i := 0; i < figCount; {

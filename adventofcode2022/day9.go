@@ -9,7 +9,6 @@ import (
 	"strings"
 )
 
-
 func DirectionOf(s string) (Direction, error) {
 	switch s {
 	case "U":
